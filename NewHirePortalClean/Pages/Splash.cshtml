@@ -1,0 +1,49 @@
+﻿@page
+@model NewHirePortalClean.Pages.SplashModel
+@{
+    ViewData["Title"] = "Welcome to SMCLR Team";
+    Layout = null; // Use the main layout if available
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/formStyles.css" />
+    <style>
+        .splash-container {
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+            margin-top: 30px;
+        }
+
+            .button:hover {
+                background-color: #0056b3;
+            }
+
+        h1 {
+            color: #333;
+        }
+
+        img {
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<div class="splash-container">
+    <img src="~/images/SMCLR- BLACK AND WHITE-01.png" alt="Company Logo" />
+    <h1>Welcome to the SMCLR Team</h1>
+    <p>We are excited to have you join us. Please proceed when you are ready to fill out your application.</p>
+    <a href="@Url.Page("/Login")" class="button">Proceed to Login</a>
+</div>

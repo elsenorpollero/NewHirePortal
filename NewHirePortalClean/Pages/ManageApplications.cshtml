@@ -1,0 +1,35 @@
+﻿@page
+@model NewHirePortalClean.Pages.ManageApplicationsModel
+@{
+    ViewData["Title"] = "Manage Employee Applications";
+}
+
+<h1>Manage Employee Applications</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Application Status</th>
+            <th>Last Updated</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model.Employees)
+        {
+            <tr>
+                <td>@employee.FirstName</td>
+                <td>@employee.LastName</td>
+                <td>@employee.Email</td>
+                <td>@(employee.IsApplicationComplete ? "Complete" : "Incomplete")</td>
+                <td>@employee.LastUpdated.ToString("g")</td>
+                <td>
+                    <a asp-page="/EditApplication" asp-route-id="@employee.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>

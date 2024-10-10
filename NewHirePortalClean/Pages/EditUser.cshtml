@@ -1,0 +1,77 @@
+﻿@page "{id:int}"
+@model NewHirePortalClean.Pages.EditUserModel
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = null; // Use the main layout if available
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/formStyles.css" />
+    <style>
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .button:hover {
+                background-color: #0056b3;
+            }
+    </style>
+</head>
+
+<div class="container">
+    <h2>Edit User Information</h2>
+    <form method="post">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="User.Username" value="@Model.User.Username" required />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="User.Password" value="@Model.User.Password" required />
+        </div>
+        <div class="form-group">
+            <label for="isAdmin">Is Admin:</label>
+            <input type="checkbox" id="isAdmin" name="User.IsAdmin" @(Model.User.IsAdmin ? "checked" : "") />
+        </div>
+        <button type="submit" class="button">Save Changes</button>
+    </form>
+</div>

@@ -1,0 +1,67 @@
+﻿/* splash.css */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.splash-container {
+    max-width: 600px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+}
+
+/* Logo Styling */
+#logo {
+    max-width: 100%;
+    height: auto;
+    opacity: 0;
+    animation: fadeIn 3s ease-in forwards; /* Fade-in effect over 3 seconds */
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+#nextButton {
+    display: none;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: opacity 1s;
+}
+
+    #nextButton.show {
+        display: inline-block;
+        opacity: 1;
+    }

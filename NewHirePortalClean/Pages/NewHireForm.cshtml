@@ -1,0 +1,211 @@
+﻿@page
+@model NewHirePortalClean.Pages.NewHireFormModel
+@{
+    ViewData["Title"] = "Employment Application";
+}
+
+<!-- Link to external formStyles.css file -->
+<link rel="stylesheet" href="/css/formStyles.css" />
+
+<div class="form-container">
+    <h1>New Hire Application</h1>
+    <h2>Personal Information</h2>
+
+    <form method="post" id="hireForm">
+        <!-- Full Name -->
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" required />
+
+        <!-- Email -->
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <!-- Phone Number -->
+        <label for="phoneNumber">Phone Number</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required />
+
+        <!-- Current Address -->
+        <label for="currentAddress">Current Address</label>
+        <input type="text" id="currentAddress" name="currentAddress" required />
+
+        <!-- Date Available -->
+        <label for="dateAvailable">Date Available</label>
+        <input type="date" id="dateAvailable" name="dateAvailable" required />
+
+        <!-- Social Security Number -->
+        <label for="socialSecurity">Social Security Number</label>
+        <input type="text" id="socialSecurity" name="socialSecurity" required />
+
+        <!-- Desired Salary -->
+        <label for="desiredSalary">Desired Salary</label>
+        <input type="text" id="desiredSalary" name="desiredSalary" />
+
+        <!-- U.S. Citizen Checkboxes -->
+        <label>Are you a U.S. citizen?</label>
+        <div class="radio-group">
+            <input type="radio" id="citizenYes" name="usCitizen" value="Yes" required onchange="toggleExplanation('usCitizenExplanation', false)" />
+            <label for="citizenYes">Yes</label>
+
+            <input type="radio" id="citizenNo" name="usCitizen" value="No" onchange="toggleExplanation('usCitizenExplanation', true)" />
+            <label for="citizenNo">No</label>
+        </div>
+
+        <!-- Explanation for U.S. Citizen -->
+        <div id="usCitizenExplanation" style="display: none;">
+            <label for="explainCitizen">Explain:</label>
+            <textarea id="explainCitizen" name="explainCitizen" rows="4" placeholder="Provide details..."></textarea>
+        </div>
+
+        <!-- Worked for this Company Checkboxes -->
+        <label>Have you worked for this company before?</label>
+        <div class="radio-group">
+            <input type="radio" id="workedYes" name="workedBefore" value="Yes" required onchange="toggleExplanation('workedBeforeExplanation', true)" />
+            <label for="workedYes">Yes</label>
+
+            <input type="radio" id="workedNo" name="workedBefore" value="No" onchange="toggleExplanation('workedBeforeExplanation', false)" />
+            <label for="workedNo">No</label>
+        </div>
+
+        <!-- Explanation for Worked for this Company -->
+        <div id="workedBeforeExplanation" style="display: none;">
+            <label for="explainWorkedBefore">Explain:</label>
+            <textarea id="explainWorkedBefore" name="explainWorkedBefore" rows="4" placeholder="Provide details..."></textarea>
+        </div>
+
+        <!-- Convicted Felon Checkboxes -->
+        <label>Have you ever been convicted of a felony?</label>
+        <div class="radio-group">
+            <input type="radio" id="felonYes" name="felon" value="Yes" required onchange="toggleExplanation('felonyExplanation', true)" />
+            <label for="felonYes">Yes</label>
+
+            <input type="radio" id="felonNo" name="felon" value="No" onchange="toggleExplanation('felonyExplanation', false)" />
+            <label for="felonNo">No</label>
+        </div>
+
+        <!-- Explanation for Convicted Felon -->
+        <div id="felonyExplanation" style="display: none;">
+            <label for="explainFelony">Explain:</label>
+            <textarea id="explainFelony" name="explainFelony" rows="4" placeholder="Provide details..."></textarea>
+        </div>
+
+        <!-- Authorized to Work in the U.S. Checkboxes -->
+        <label>Are you authorized to work in the U.S.?</label>
+        <div class="radio-group">
+            <input type="radio" id="workYes" name="authorizedToWork" value="Yes" required onchange="toggleExplanation('workExplanation', false)" />
+            <label for="workYes">Yes</label>
+
+            <input type="radio" id="workNo" name="authorizedToWork" value="No" onchange="toggleExplanation('workExplanation', true)" />
+            <label for="workNo">No</label>
+        </div>
+
+        <!-- Explanation for Authorized to Work -->
+        <div id="workExplanation" style="display: none;">
+            <label for="explainWork">Explain:</label>
+            <textarea id="explainWork" name="explainWork" rows="4" placeholder="Provide details..."></textarea>
+        </div>
+
+        <!-- Buttons for Next and Previous -->
+        <div class="button-group">
+            <button type="button" id="previousBtn" onclick="navigateToPrevious()">Previous</button>
+            <button type="button" id="nextBtn" onclick="saveAndProceed()">Next</button>
+        </div>
+    </form>
+</div>
+
+<!-- JavaScript to persist form data and handle navigation -->
+<script>
+    // Save form data to localStorage
+    function saveFormData() {
+        var formElements = document.getElementById('hireForm').elements;
+        for (var i = 0; i < formElements.length; i++) {
+            var element = formElements[i];
+            if (element.type !== 'radio' || element.checked) {
+                localStorage.setItem(element.name, element.value);
+            }
+        }
+    }
+
+    // Populate form with saved data from localStorage
+    function populateFormData() {
+        var formElements = document.getElementById('hireForm').elements;
+        for (var i = 0; i < formElements.length; i++) {
+            var element = formElements[i];
+            var storedValue = localStorage.getItem(element.name);
+            if (storedValue) {
+                if (element.type === 'radio') {
+                    element.checked = (storedValue === element.value);
+                } else {
+                    element.value = storedValue;
+                }
+            }
+        }
+
+        // Trigger the onchange events to display any conditional fields
+        triggerConditionalFields();
+    }
+
+    // Function to trigger onchange events for radio buttons
+    function triggerConditionalFields() {
+        // U.S. Citizen
+        var usCitizenYes = document.getElementById('citizenYes');
+        var usCitizenNo = document.getElementById('citizenNo');
+        if (usCitizenYes.checked) {
+            toggleExplanation('usCitizenExplanation', false);
+        } else if (usCitizenNo.checked) {
+            toggleExplanation('usCitizenExplanation', true);
+        }
+
+        // Worked for this Company
+        var workedYes = document.getElementById('workedYes');
+        var workedNo = document.getElementById('workedNo');
+        if (workedYes.checked) {
+            toggleExplanation('workedBeforeExplanation', true);
+        } else if (workedNo.checked) {
+            toggleExplanation('workedBeforeExplanation', false);
+        }
+
+        // Convicted Felon
+        var felonYes = document.getElementById('felonYes');
+        var felonNo = document.getElementById('felonNo');
+        if (felonYes.checked) {
+            toggleExplanation('felonyExplanation', true);
+        } else if (felonNo.checked) {
+            toggleExplanation('felonyExplanation', false);
+        }
+
+        // Authorized to Work
+        var workYes = document.getElementById('workYes');
+        var workNo = document.getElementById('workNo');
+        if (workYes.checked) {
+            toggleExplanation('workExplanation', false);
+        } else if (workNo.checked) {
+            toggleExplanation('workExplanation', true);
+        }
+    }
+
+    // Function to show or hide explanation fields
+    function toggleExplanation(elementId, show) {
+        var explanationDiv = document.getElementById(elementId);
+        if (show) {
+            explanationDiv.style.display = 'block';  // Show the field if specific option is selected
+        } else {
+            explanationDiv.style.display = 'none';  // Hide the field if the opposite option is selected
+        }
+    }
+
+    // Proceed to the next section (simulating navigation)
+    function saveAndProceed() {
+        saveFormData();
+        // Redirect to the next page (e.g., Employment History)
+        window.location.href = "/EmploymentHistory";
+    }
+
+    // Navigate to the previous section (go to Splash page)
+    function navigateToPrevious() {
+        saveFormData();
+        window.location.href = "/Splash"; // Redirect to splash screen
+    }
+
+    // Populate form data when the page loads
+    window.onload = populateFormData;
+</script>
