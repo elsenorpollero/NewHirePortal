@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using NewHirePortalClean.Data;
 using NewHirePortalClean.Models;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace NewHirePortalClean.Pages
 {
@@ -18,11 +16,11 @@ namespace NewHirePortalClean.Pages
             _context = context;
         }
 
-        public List<Employee> Employees { get; set; }
+        public IList<EmployeeApplication> Applications { get; set; }  // Updated to EmployeeApplication
 
-        public async Task OnGetAsync()
+        public void OnGet()
         {
-            Employees = await _context.Employees.ToListAsync();
+            Applications = _context.EmployeeApplications.ToList();  // Corrected to EmployeeApplications
         }
     }
 }

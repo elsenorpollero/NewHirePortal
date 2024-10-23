@@ -7,17 +7,20 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+// Add DbContext for EF Core - only once
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer("Server=BRAHMS\\SQLEXPRESS;Database=NewHireDatabase;Trusted_Connection=True;TrustServerCertificate=True;"));
+
+
 // Add session services
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Adjust the timeout as needed
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Enforce Secure attribute
 });
 
-// Add DbContext for EF Core
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -37,11 +40,14 @@ app.UseSession(); // Enable session middleware
 
 app.UseAuthorization();
 
-// Set Splash as the default route
-app.MapGet("/", (context) =>
+app.UseEndpoints(endpoints =>
 {
-    context.Response.Redirect("/Splash");
-    return Task.CompletedTask;
+    endpoints.MapRazorPages();
+    endpoints.MapGet("/", context =>
+    {
+        context.Response.Redirect("/Splash");
+        return Task.CompletedTask;
+    });
 });
 
 app.MapRazorPages();

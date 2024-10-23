@@ -1,0 +1,126 @@
+﻿@page
+@model NewHirePortalClean.Pages.AddressModel
+@{
+    ViewData["Title"] = "Address Form";
+    Layout = null;
+}
+
+<!-- Link to the splash.css stylesheet -->
+<link rel="stylesheet" href="~/css/splash.css" />
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Form</title>
+    <style>
+        body {
+            background: url('/images/47C0FD68-1884-4C3F-8CB4-91F7E953122C.jpeg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .tile {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            text-align: left;
+        }
+
+        .form-button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tile">
+            <h1>@ViewData["Title"]</h1>
+            <form method="post">
+                <!-- Employee Information -->
+                <div class="form-group">
+                    <label for="FirstName">First Name</label>
+                    <input type="text" id="FirstName" name="Address.FirstName" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="MiddleName">Middle Name</label>
+                    <input type="text" id="MiddleName" name="Address.MiddleName" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="LastName">Last Name</label>
+                    <input type="text" id="LastName" name="Address.LastName" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="Email">Email</label>
+                    <input type="email" id="Email" name="Address.Email" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="PhoneNumber">Phone Number</label>
+                    <input type="text" id="PhoneNumber" name="Address.PhoneNumber" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="PhoneNumber2">Phone Number 2</label>
+                    <input type="text" id="PhoneNumber2" name="Address.PhoneNumber2" class="form-control" />
+                </div>
+
+                <!-- Address Information -->
+                <div class="form-group">
+                    <label for="StreetAddress">Street Address</label>
+                    <input type="text" id="StreetAddress" name="Address.StreetAddress" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="City">City</label>
+                    <input type="text" id="City" name="Address.City" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="State">State</label>
+                    <input type="text" id="State" name="Address.State" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="ZipCode">Zip-code</label>
+                    <input type="text" id="ZipCode" name="Address.ZipCode" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</body>
+</html>

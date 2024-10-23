@@ -1,41 +1,42 @@
 {
+  "profiles": {
+    "NewHirePortalClean": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7094;http://localhost:5094",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "dotnetRunMessages": true,
+    "applicationUrl": "http://localhost:5241"
+  },
+  "https": {
+    "commandName": "Project",
+    "launchBrowser": true,
+    "launchUrl": "Splash",
+    "dotnetRunMessages": true,
+    "applicationUrl": "https://localhost:7094",
+    "sqlDebugging": true
+  },
+  "IIS Express": {
+    "commandName": "IISExpress",
+    "launchBrowser": true,
+    "launchUrl": "Splash",
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    },
+    "sqlDebugging": true
+  }
+},
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {
-    "windowsAuthentication": false,
+    "windowsAuthentication": true,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:19254",
-      "sslPort": 44353
-    }
-  },
-  "profiles": {
-    "http": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "Splash",
-      "applicationUrl": "http://localhost:5241",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "https": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "Splash",
-      "applicationUrl": "https://localhost:7094;http://localhost:5241",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "Splash",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      "applicationUrl": "http://localhost:7094",
+      "sslPort": 7094
     }
   }
 }

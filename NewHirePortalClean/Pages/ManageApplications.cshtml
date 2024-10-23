@@ -1,35 +1,23 @@
-﻿@page
-@model NewHirePortalClean.Pages.ManageApplicationsModel
-@{
-    ViewData["Title"] = "Manage Employee Applications";
-}
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using NewHirePortalClean.Models;  // Correct namespace for Application model
+using System.Collections.Generic;
 
-<h1>Manage Employee Applications</h1>
+namespace NewHirePortalClean.Pages
+{
+    public class ManageApplicationsModel : PageModel
+    {
+        public IList<Application>
+    Applications { get; set; } = new List<Application>
+        ();
 
-<table>
-    <thead>
-        <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Application Status</th>
-            <th>Last Updated</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var employee in Model.Employees)
+        public void OnGet()
         {
-            <tr>
-                <td>@employee.FirstName</td>
-                <td>@employee.LastName</td>
-                <td>@employee.Email</td>
-                <td>@(employee.IsApplicationComplete ? "Complete" : "Incomplete")</td>
-                <td>@employee.LastUpdated.ToString("g")</td>
-                <td>
-                    <a asp-page="/EditApplication" asp-route-id="@employee.Id">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-
-</table>
+        // Example data for demonstration
+        Applications = new List<Application>
+            {
+            new Application { Id = 1, EmployeeName = "John Doe", IsComplete = true, LastUpdated = DateTime.Now, Status = "Approved" },
+            new Application { Id = 2, EmployeeName = "Jane Smith", IsComplete = false, LastUpdated = DateTime.Now, Status = "Pending" }
+            };
+            }
+            }
+            }

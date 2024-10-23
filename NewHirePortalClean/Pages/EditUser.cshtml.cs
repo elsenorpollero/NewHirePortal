@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NewHirePortalClean.Data;
-using NewHirePortalClean.Models;
+using NewHirePortalClean.Models;  // This ensures the correct User class is used
 using System.Threading.Tasks;
 
 namespace NewHirePortalClean.Pages
@@ -16,7 +16,7 @@ namespace NewHirePortalClean.Pages
         }
 
         [BindProperty]
-        public User User { get; set; }
+        public NewHirePortalClean.Models.User User { get; set; }  // Specify the full namespace for User
 
         public async Task<IActionResult> OnGetAsync(int id)
         {

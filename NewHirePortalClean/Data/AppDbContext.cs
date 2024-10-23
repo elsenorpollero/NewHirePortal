@@ -9,8 +9,13 @@ namespace NewHirePortalClean.Data
         {
         }
 
+        // DbSets for your models
         public DbSet<User> Users { get; set; }
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Application> Applications { get; set; } // Add this line
+        public DbSet<EmployeeApplication> EmployeeApplications { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<PersonalInformation> PersonalInformation { get; set; }
+        public DbSet<EmployeeInformation> EmployeeInformation { get; set; }
+
+        // No need for OnConfiguring if the connection string is handled in Program.cs
     }
 }

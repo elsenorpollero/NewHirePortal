@@ -8,6 +8,43 @@
 <head>
     <link rel="stylesheet" href="~/css/formStyles.css" />
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ff6600, #333);
+            padding: 20px;
+            color: #fff;
+            position: relative;
+        }
+
+            .header img {
+                max-width: 150px;
+                position: absolute;
+                top: 50%;
+                left: 20px;
+                transform: translateY(-50%);
+            }
+
+            .header h1 {
+                color: #fff;
+                font-size: 2.5rem;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                margin: 0;
+                line-height: 1.2;
+            }
+
+            .header .sub-header {
+                font-size: 1.2rem;
+                color: #f1f1f1;
+                margin-top: 5px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            }
+
         .container {
             display: flex;
             flex-wrap: wrap;
@@ -23,10 +60,11 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             padding: 20px;
-            width: 350px;
+            min-width: 300px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: center;
+            position: relative;
         }
 
             .tile:hover {
@@ -36,8 +74,8 @@
 
         h2 {
             text-align: center;
-            color: #007bff;
-            margin-bottom: 15px;
+            color: #ff6600;
+            margin-bottom: 0;
         }
 
         .styled-table {
@@ -55,7 +93,7 @@
             }
 
             .styled-table th {
-                background-color: #007bff;
+                background-color: #ff6600;
                 color: #ffffff;
             }
 
@@ -89,61 +127,156 @@
         }
 
         .button {
-            background-color: #007bff;
+            background-color: #ff6600;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 5px 10px;
             cursor: pointer;
             border-radius: 5px;
-            font-size: 1rem;
+            font-size: 0.8rem;
             transition: background-color 0.3s ease;
             align-self: center;
         }
 
             .button:hover {
-                background-color: #0056b3;
+                background-color: #cc5200;
             }
 
         .button-link {
-            color: #007bff;
+            color: #ff6600;
             text-decoration: none;
         }
 
             .button-link:hover {
                 text-decoration: underline;
             }
+
+        .draggable {
+            cursor: move;
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script>
+        $(function () {
+            // Initialize draggable and resizable for the tiles
+            $(".tile").draggable({
+                handle: "h2",
+                stop: function (event, ui) {
+                    saveTilePositions();
+                }
+            }).resizable({
+                minHeight: 150,
+                minWidth: 300,
+                stop: function (event, ui) {
+                    saveTilePositions();
+                }
+            });
+
+            // Automatically adjust tile height based on table size
+            $(".styled-table").each(function () {
+                var table = $(this);
+                var tile = table.closest(".tile");
+                if (table.find("tbody tr").length === 0) {
+                    tile.height(150); // Set minimum height if no rows
+                } else {
+                    tile.height(table.height() + 100);
+                }
+            });
+
+            // Load saved positions when the page loads
+            loadTilePositions();
+
+            // Function to save tile positions to local storage
+            function saveTilePositions() {
+                var positions = [];
+                $(".tile").each(function () {
+                    var tileId = $(this).attr("id");
+                    var position = $(this).position();
+                    var width = $(this).width();
+                    var height = $(this).height();
+                    positions.push({
+                        id: tileId,
+                        left: position.left,
+                        top: position.top,
+                        width: width,
+                        height: height
+                    });
+                });
+                localStorage.setItem("tilePositions", JSON.stringify(positions));
+            }
+
+            // Function to load tile positions from local storage
+            function loadTilePositions() {
+                var positions = JSON.parse(localStorage.getItem("tilePositions"));
+                if (positions) {
+                    positions.forEach(function (position) {
+                        var tile = $("#" + position.id);
+                        tile.css({
+                            left: position.left + "px",
+                            top: position.top + "px",
+                            width: position.width + "px",
+                            height: position.height + "px",
+                            position: "absolute"
+                        });
+                    });
+                }
+            }
+        });
+    </script>
 </head>
+
+<div class="header">
+    <img src="/images/SMCLR- BLACK AND WHITE-01.png" alt="Company Logo" style="max-width: 150px;">
+    <h1>Admin Portal</h1>
+    <div class="sub-header">Welcome to the Admin Dashboard - Manage your users and applications efficiently</div>
+</div>
 
 <div class="container">
     <!-- Tile for Logged-In Users -->
-    <div class="tile">
+    <div class="tile draggable" id="loggedInUsersTile">
         <h2>Logged-In Users</h2>
         <table class="styled-table">
             <thead>
                 <tr>
+                    <th style="width: 5%;">Select</th>
                     <th>Username</th>
                     <th>Password</th>
                     <th>Last Login</th>
                     <th>Is Admin</th>
+                    <th>Has Application</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var user in Model.Users)
                 {
                     <tr>
+                        <td><input type="radio" name="SelectedUser" value="@user.Id" /></td>
                         <td>@user.Username</td>
                         <td>@user.Password</td>
                         <td>@(user.LastLogin == DateTime.MinValue ? "Never" : user.LastLogin.ToString("g"))</td>
                         <td>@(user.IsAdmin ? "Yes" : "No")</td>
+                        <td>@(Model.Applications.Any(a => a.FirstName + " " + a.LastName == user.Username) ? "Yes" : "No")</td>
+                        <td>
+                            <form method="post" asp-page-handler="DeleteUser" style="display:inline;">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="button">Delete</button>
+                            </form>
+                            <form method="post" asp-page-handler="EditUser" style="display:inline;">
+                                <input type="hidden" name="userId" value="@user.Id" />
+                                <button type="submit" class="button">Edit</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 
-    <!-- Tile for Employee Applications -->
-    <div class="tile">
+    <!-- Employee Applications Tile -->
+    <div class="tile draggable" id="employeeApplicationsTile">
         <h2>Employee Applications</h2>
         <table class="styled-table">
             <thead>
@@ -161,7 +294,16 @@
                         <td>@app.EmployeeName</td>
                         <td>@(app.IsComplete ? "Yes" : "No")</td>
                         <td>@app.LastUpdated.ToString("g")</td>
-                        <td><a asp-page="/EditApplication" asp-route-id="@app.Id" class="button-link">Edit</a></td>
+                        <td>
+                            <form method="post" asp-page-handler="DeleteApplication" style="display:inline;">
+                                <input type="hidden" name="applicationId" value="@app.Id" />
+                                <button type="submit" class="button">Delete</button>
+                            </form>
+                            <form method="post" asp-page-handler="EditApplication" style="display:inline;">
+                                <input type="hidden" name="applicationId" value="@app.Id" />
+                                <button type="submit" class="button">Edit</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -169,22 +311,34 @@
     </div>
 
     <!-- Tile for Adding New User -->
-    <div class="tile">
+    <div class="tile draggable" id="addNewUserTile">
         <h2>Add New User</h2>
         <form method="post" asp-page-handler="AddUser" class="form-style">
             <div class="form-group">
                 <label for="newUsername">Username:</label>
-                <input type="text" id="newUsername" name="newUsername" required />
+                <input type="text" id="newUsername" name="NewUsername" class="form-control" required />
             </div>
             <div class="form-group">
                 <label for="newPassword">Password:</label>
-                <input type="password" id="newPassword" name="newPassword" required />
+                <input type="password" id="newPassword" name="NewPassword" class="form-control" required />
             </div>
             <div class="form-group">
-                <label for="isAdmin">Is Admin:</label>
-                <input type="checkbox" id="isAdmin" name="isAdmin" />
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control" required />
             </div>
-            <button type="submit" class="button">Add User</button>
+            <div class="form-group">
+                <label for="role">Role:</label><br>
+                <input type="radio" id="admin" name="Role" value="Admin" required> Admin<br>
+                <input type="radio" id="employee" name="Role" value="Employee" required> Employee
+            </div>
+            <div class="form-group">
+                <label for="needsApplication">Link to Application:</label>
+                <select id="needsApplication" name="NeedsApplication" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add User</button>
         </form>
     </div>
 </div>

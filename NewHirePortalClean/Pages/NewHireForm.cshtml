@@ -1,211 +1,231 @@
 ﻿@page
 @model NewHirePortalClean.Pages.NewHireFormModel
 @{
-    ViewData["Title"] = "Employment Application";
+    ViewData["Title"] = "New Hire Form";
 }
 
-<!-- Link to external formStyles.css file -->
-<link rel="stylesheet" href="/css/formStyles.css" />
+<!-- Link to the splash.css stylesheet -->
+<link rel="stylesheet" href="~/css/splash.css" />
 
-<div class="form-container">
-    <h1>New Hire Application</h1>
-    <h2>Personal Information</h2>
-
-    <form method="post" id="hireForm">
-        <!-- Full Name -->
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" name="fullName" required />
-
-        <!-- Email -->
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required />
-
-        <!-- Phone Number -->
-        <label for="phoneNumber">Phone Number</label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" required />
-
-        <!-- Current Address -->
-        <label for="currentAddress">Current Address</label>
-        <input type="text" id="currentAddress" name="currentAddress" required />
-
-        <!-- Date Available -->
-        <label for="dateAvailable">Date Available</label>
-        <input type="date" id="dateAvailable" name="dateAvailable" required />
-
-        <!-- Social Security Number -->
-        <label for="socialSecurity">Social Security Number</label>
-        <input type="text" id="socialSecurity" name="socialSecurity" required />
-
-        <!-- Desired Salary -->
-        <label for="desiredSalary">Desired Salary</label>
-        <input type="text" id="desiredSalary" name="desiredSalary" />
-
-        <!-- U.S. Citizen Checkboxes -->
-        <label>Are you a U.S. citizen?</label>
-        <div class="radio-group">
-            <input type="radio" id="citizenYes" name="usCitizen" value="Yes" required onchange="toggleExplanation('usCitizenExplanation', false)" />
-            <label for="citizenYes">Yes</label>
-
-            <input type="radio" id="citizenNo" name="usCitizen" value="No" onchange="toggleExplanation('usCitizenExplanation', true)" />
-            <label for="citizenNo">No</label>
-        </div>
-
-        <!-- Explanation for U.S. Citizen -->
-        <div id="usCitizenExplanation" style="display: none;">
-            <label for="explainCitizen">Explain:</label>
-            <textarea id="explainCitizen" name="explainCitizen" rows="4" placeholder="Provide details..."></textarea>
-        </div>
-
-        <!-- Worked for this Company Checkboxes -->
-        <label>Have you worked for this company before?</label>
-        <div class="radio-group">
-            <input type="radio" id="workedYes" name="workedBefore" value="Yes" required onchange="toggleExplanation('workedBeforeExplanation', true)" />
-            <label for="workedYes">Yes</label>
-
-            <input type="radio" id="workedNo" name="workedBefore" value="No" onchange="toggleExplanation('workedBeforeExplanation', false)" />
-            <label for="workedNo">No</label>
-        </div>
-
-        <!-- Explanation for Worked for this Company -->
-        <div id="workedBeforeExplanation" style="display: none;">
-            <label for="explainWorkedBefore">Explain:</label>
-            <textarea id="explainWorkedBefore" name="explainWorkedBefore" rows="4" placeholder="Provide details..."></textarea>
-        </div>
-
-        <!-- Convicted Felon Checkboxes -->
-        <label>Have you ever been convicted of a felony?</label>
-        <div class="radio-group">
-            <input type="radio" id="felonYes" name="felon" value="Yes" required onchange="toggleExplanation('felonyExplanation', true)" />
-            <label for="felonYes">Yes</label>
-
-            <input type="radio" id="felonNo" name="felon" value="No" onchange="toggleExplanation('felonyExplanation', false)" />
-            <label for="felonNo">No</label>
-        </div>
-
-        <!-- Explanation for Convicted Felon -->
-        <div id="felonyExplanation" style="display: none;">
-            <label for="explainFelony">Explain:</label>
-            <textarea id="explainFelony" name="explainFelony" rows="4" placeholder="Provide details..."></textarea>
-        </div>
-
-        <!-- Authorized to Work in the U.S. Checkboxes -->
-        <label>Are you authorized to work in the U.S.?</label>
-        <div class="radio-group">
-            <input type="radio" id="workYes" name="authorizedToWork" value="Yes" required onchange="toggleExplanation('workExplanation', false)" />
-            <label for="workYes">Yes</label>
-
-            <input type="radio" id="workNo" name="authorizedToWork" value="No" onchange="toggleExplanation('workExplanation', true)" />
-            <label for="workNo">No</label>
-        </div>
-
-        <!-- Explanation for Authorized to Work -->
-        <div id="workExplanation" style="display: none;">
-            <label for="explainWork">Explain:</label>
-            <textarea id="explainWork" name="explainWork" rows="4" placeholder="Provide details..."></textarea>
-        </div>
-
-        <!-- Buttons for Next and Previous -->
-        <div class="button-group">
-            <button type="button" id="previousBtn" onclick="navigateToPrevious()">Previous</button>
-            <button type="button" id="nextBtn" onclick="saveAndProceed()">Next</button>
-        </div>
-    </form>
-</div>
-
-<!-- JavaScript to persist form data and handle navigation -->
-<script>
-    // Save form data to localStorage
-    function saveFormData() {
-        var formElements = document.getElementById('hireForm').elements;
-        for (var i = 0; i < formElements.length; i++) {
-            var element = formElements[i];
-            if (element.type !== 'radio' || element.checked) {
-                localStorage.setItem(element.name, element.value);
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Hire Form</title>
+    <style>
+        body {
+            background: url('/images/47C0FD68-1884-4C3F-8CB4-91F7E953122C.jpeg') no-repeat center center fixed;
+            background-size: cover;
         }
-    }
 
-    // Populate form with saved data from localStorage
-    function populateFormData() {
-        var formElements = document.getElementById('hireForm').elements;
-        for (var i = 0; i < formElements.length; i++) {
-            var element = formElements[i];
-            var storedValue = localStorage.getItem(element.name);
-            if (storedValue) {
-                if (element.type === 'radio') {
-                    element.checked = (storedValue === element.value);
+        .header {
+            background-color: orange;
+            border-radius: 10px;
+            padding: 5px;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 37%;
+        }
+
+        .footer {
+            background-color: black;
+            color: white;
+            border-radius: 10px;
+            padding: 10px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .tile {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            text-align: left;
+        }
+
+            .tile:hover {
+                box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.5);
+            }
+
+        .form-button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+            .form-button:hover {
+                background-color: darkgray;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .warning-bubble {
+            display: none;
+            position: absolute;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 5px;
+            z-index: 1000;
+        }
+    </style>
+    <script>
+        setInterval(function () {
+            saveFormData();
+        }, 15000);  // Save every 15 seconds
+
+        function saveFormData() {
+            const formData = {
+                FullName: document.getElementById('FullName').value,
+                // Add other fields you want to save here
+            };
+
+            fetch('/api/SavePersonalInformation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            }).then(response => {
+                if (response.ok) {
+                    console.log('Form data auto-saved successfully.');
                 } else {
-                    element.value = storedValue;
+                    console.log('Failed to auto-save form data.');
                 }
-            }
+            });
         }
+    </script>
 
-        // Trigger the onchange events to display any conditional fields
-        triggerConditionalFields();
-    }
+    <script>
+        /*
+        document.addEventListener('DOMContentLoaded', function () {
+            const nameInputs = document.querySelectorAll('.name-input');
 
-    // Function to trigger onchange events for radio buttons
-    function triggerConditionalFields() {
-        // U.S. Citizen
-        var usCitizenYes = document.getElementById('citizenYes');
-        var usCitizenNo = document.getElementById('citizenNo');
-        if (usCitizenYes.checked) {
-            toggleExplanation('usCitizenExplanation', false);
-        } else if (usCitizenNo.checked) {
-            toggleExplanation('usCitizenExplanation', true);
-        }
+            nameInputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    const warningBubble = this.nextElementSibling;
+                    if (/[^a-zA-Z ]/.test(this.value)) {
+                        warningBubble.style.display = 'block';
+                    } else {
+                        warningBubble.style.display = 'none';
+                    }
+                });
+            });
 
-        // Worked for this Company
-        var workedYes = document.getElementById('workedYes');
-        var workedNo = document.getElementById('workedNo');
-        if (workedYes.checked) {
-            toggleExplanation('workedBeforeExplanation', true);
-        } else if (workedNo.checked) {
-            toggleExplanation('workedBeforeExplanation', false);
-        }
+            // Save form data in sessionStorage to maintain it during navigation
+            const form = document.querySelector('form');
+            const fields = form.querySelectorAll('input[type="text"], select');
 
-        // Convicted Felon
-        var felonYes = document.getElementById('felonYes');
-        var felonNo = document.getElementById('felonNo');
-        if (felonYes.checked) {
-            toggleExplanation('felonyExplanation', true);
-        } else if (felonNo.checked) {
-            toggleExplanation('felonyExplanation', false);
-        }
+            fields.forEach(field => {
+                // Load saved value from sessionStorage
+                const savedValue = sessionStorage.getItem(field.id);
+                if (savedValue) {
+                    field.value = savedValue;
+                }
 
-        // Authorized to Work
-        var workYes = document.getElementById('workYes');
-        var workNo = document.getElementById('workNo');
-        if (workYes.checked) {
-            toggleExplanation('workExplanation', false);
-        } else if (workNo.checked) {
-            toggleExplanation('workExplanation', true);
-        }
-    }
+                // Save value to sessionStorage on change
+                field.addEventListener('input', function () {
+                    sessionStorage.setItem(field.id, field.value);
+                });
+                field.addEventListener('change', function () {
+                    sessionStorage.setItem(field.id, field.value);
+                });
+            });
 
-    // Function to show or hide explanation fields
-    function toggleExplanation(elementId, show) {
-        var explanationDiv = document.getElementById(elementId);
-        if (show) {
-            explanationDiv.style.display = 'block';  // Show the field if specific option is selected
-        } else {
-            explanationDiv.style.display = 'none';  // Hide the field if the opposite option is selected
-        }
-    }
+            // Handle form navigation buttons
+            form.addEventListener('submit', function (event) {
+                const formaction = event.submitter.getAttribute('value');
+                if (formaction === '/Splash') {
+                    window.location.href = '/Splash';
+                } else if (formaction === '/EmploymentHistory') {
+                    window.location.href = '/EmploymentHistory'; // Placeholder for the next page
+                }
+                event.preventDefault();
+            });
+        });
+        */
+    </script>
+</head>
+<body>
+    <!-- Custom Header with Navigation Links -->
+    <header class="splash-header">
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Admin">Admin Portal</a></li>
+                <li><a href="https://www.SMCLR.com/privacy-policy">Privacy</a></li>
+                <li><a href="https://www.smclr.com">Learn More</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    // Proceed to the next section (simulating navigation)
-    function saveAndProceed() {
-        saveFormData();
-        // Redirect to the next page (e.g., Employment History)
-        window.location.href = "/EmploymentHistory";
-    }
+    <!-- Main Form Section -->
+    <div class="container">
+        <div class="tile">
+            <h1>@ViewData["Title"]</h1>
+            <p>Applicant Information</p>
+            <form method="post">
+                <div class="form-group">
+                    <label for="FirstName">First Name</label>
+                    <input type="text" id="FirstName" name="FirstName" class="form-control name-input" />
+                    <div class="warning-bubble">Punctuation is not allowed.</div>
+                </div>
+                <div class="form-group">
+                    <label for="MiddleName">Middle Name</label>
+                    <input type="text" id="MiddleName" name="MiddleName" class="form-control name-input" />
+                    <div class="warning-bubble">Punctuation is not allowed.</div>
+                </div>
+                <div class="form-group">
+                    <label for="LastName">Last Name</label>
+                    <input type="text" id="LastName" name="LastName" class="form-control name-input" />
+                    <div class="warning-bubble">Punctuation is not allowed.</div>
+                </div>
+                <!-- Add other form fields in separate tiles as needed -->
+                <div class="form-group">
+                    <button type="submit" name="formaction" value="Next" class="form-button">Next</button>
+                    <button type="submit" name="formaction" value="Back" class="form-button">Back</button>
+                    <button type="submit" name="formaction" value="Save" class="form-button">Save</button>
+                    <button type="submit" name="formaction" value="SaveAndContinue" class="form-button">Save and Continue</button>
+                </div>
 
-    // Navigate to the previous section (go to Splash page)
-    function navigateToPrevious() {
-        saveFormData();
-        window.location.href = "/Splash"; // Redirect to splash screen
-    }
 
-    // Populate form data when the page loads
-    window.onload = populateFormData;
-</script>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Footer with Copyright at the Bottom -->
+    <footer class="splash-footer">
+        <div class="footer-bar">
+            <p>&copy; 2024 SMCLR, A Crane Co., a Series LLC. All rights reserved. <a href="https://www.SMCLR.com/privacy-policy">Privacy</a></p>
+        </div>
+    </footer>
+
+</body>
+</html>

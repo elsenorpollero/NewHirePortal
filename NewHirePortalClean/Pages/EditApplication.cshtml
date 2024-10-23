@@ -1,29 +1,26 @@
 ﻿@page "{id:int}"
 @model NewHirePortalClean.Pages.EditApplicationModel
 @{
-    ViewData["Title"] = "Edit Application";
+    ViewData["Title"] = "Edit EmployeeApplication";
 }
 
-<h1>Edit Application</h1>
+<h2>Edit Application</h2>
 
 <form method="post">
     <div>
-        <label>First Name:</label>
-        <input type="text" value="@Model.Employee.FirstName" readonly />
+        <label for="employeeId">Employee ID</label>
+        <input type="text" id="employeeId" name="Application.EmployeeId" value="@Model.Application.EmployeeId" />
     </div>
+
     <div>
-        <label>Last Name:</label>
-        <input type="text" value="@Model.Employee.LastName" readonly />
+        <label for="status">Status</label>
+        <input type="text" id="status" name="Application.Status" value="@Model.Application.Status" />
     </div>
+
     <div>
-        <label>Email:</label>
-        <input type="email" value="@Model.Employee.Email" readonly />
+        <label for="isComplete">Is Complete</label>
+        <input type="checkbox" id="isComplete" name="Application.IsComplete" checked="@Model.Application.IsComplete" />
     </div>
-    <div>
-        <label>Application Complete:</label>
-        <input type="checkbox" asp-for="Employee.IsApplicationComplete" />
-    </div>
+
     <button type="submit">Save Changes</button>
 </form>
-
-<a asp-page="/ManageApplications">Cancel</a>

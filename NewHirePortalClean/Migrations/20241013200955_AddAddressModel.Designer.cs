@@ -12,8 +12,8 @@ using NewHirePortalClean.Data;
 namespace NewHirePortalClean.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241010091542_AddApplicationsTable")]
-    partial class AddApplicationsTable
+    [Migration("20241013200955_AddAddressModel")]
+    partial class AddAddressModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,50 +25,58 @@ namespace NewHirePortalClean.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("NewHirePortalClean.Models.Application", b =>
+            modelBuilder.Entity("NewHirePortalClean.Models.Address", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AddressId"));
 
-                    b.Property<string>("EmployeeName")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsComplete")
-                        .HasColumnType("bit");
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Applications");
+                    b.HasKey("AddressId");
+
+                    b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("NewHirePortalClean.Models.Employee", b =>
+            modelBuilder.Entity("NewHirePortalClean.Models.EmployeeApplication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ApplicationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsApplicationComplete")
+                    b.Property<bool>("IsComplete")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -78,9 +86,13 @@ namespace NewHirePortalClean.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("EmployeeApplications");
                 });
 
             modelBuilder.Entity("NewHirePortalClean.Models.User", b =>

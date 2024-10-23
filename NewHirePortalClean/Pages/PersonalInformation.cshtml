@@ -1,0 +1,69 @@
+﻿@page
+@model NewHirePortalClean.Pages.PersonalInformationModel
+@{
+    ViewData["Title"] = "Personal Information";
+}
+
+<div class="header">
+    <h1>New Hire Application</h1>
+</div>
+
+<div class="container">
+    <div class="tile">
+        <h2>Applicant Information</h2>
+        <form method="post">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="PersonalInfo.FullName" value="@Model.PersonalInfo.FullName" required />
+
+            <label for="streetAddress">Street Address</label>
+            <input type="text" id="streetAddress" name="PersonalInfo.StreetAddress" value="@Model.PersonalInfo.StreetAddress" required />
+
+            <label for="city">City</label>
+            <input type="text" id="city" name="PersonalInfo.City" value="@Model.PersonalInfo.City" required />
+
+            <label for="state">State</label>
+            <select id="state" name="PersonalInfo.State" required>
+                <option value="">Select a State</option>
+                <!-- Add states as options -->
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <!-- ...add the rest of the states... -->
+            </select>
+
+            <label for="zipCode">Zip-code</label>
+            <input type="text" id="zipCode" name="PersonalInfo.ZipCode" value="@Model.PersonalInfo.ZipCode" required pattern="\d{5}" title="Enter a valid 5-digit ZIP code" />
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="PersonalInfo.PhoneNumber" value="@Model.PersonalInfo.PhoneNumber" required />
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="PersonalInfo.Email" value="@Model.PersonalInfo.Email" required />
+
+            <label for="dateAvailable">Date Available</label>
+            <input type="date" id="dateAvailable" name="PersonalInfo.DateAvailable" value="@Model.PersonalInfo.DateAvailable.ToString("yyyy-MM-dd")" required />
+
+            <label for="ssn">Social Security Number</label>
+            <input type="text" id="ssn" name="PersonalInfo.SocialSecurity" value="@Model.PersonalInfo.SocialSecurity" required pattern="\d{3}-\d{2}-\d{4}" title="Enter a valid SSN (e.g., 123-45-6789)" />
+
+            <label for="desiredSalary">Desired Salary</label>
+            <input type="text" id="desiredSalary" name="PersonalInfo.DesiredSalary" value="@Model.PersonalInfo.DesiredSalary" />
+
+            <label for="positionAppliedFor">Position Applied For</label>
+            <input type="text" id="positionAppliedFor" name="PersonalInfo.PositionAppliedFor" value="@Model.PersonalInfo.PositionAppliedFor" required />
+
+            <label for="usCitizen">Are you a U.S. Citizen?</label>
+            <input type="text" id="usCitizen" name="PersonalInfo.UsCitizen" value="@Model.PersonalInfo.UsCitizen" required />
+
+            <label for="explainCitizen">Explain Citizenship (if necessary)</label>
+            <textarea id="explainCitizen" name="PersonalInfo.ExplainCitizen">@Model.PersonalInfo.ExplainCitizen</textarea>
+
+            <div class="button-group">
+                <button type="submit" formaction="/NextPage" class="button">Next</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="footer">
+    <p>&copy; 2024 Your Company</p>
+</div>

@@ -1,25 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NewHirePortalClean.Data;
 using NewHirePortalClean.Models;
-using NewHirePortalClean.Helpers; // If you created SessionExtensions in the Helpers namespace
 
 namespace NewHirePortalClean.Pages
 {
     public class NewHireFormModel : PageModel
     {
+        private readonly AppDbContext _context;
+
         [BindProperty]
         public PersonalInformation PersonalInfo { get; set; }
 
-        public IActionResult OnGet()
+        public NewHireFormModel(AppDbContext context)
         {
-            if (HttpContext.Session.GetString("IsAuthenticated") != "true")
-            {
-                return RedirectToPage("/Login");
-            }
+            _context = context;
+        }
 
-            // Retrieve existing data from session if available
-            PersonalInfo = HttpContext.Session.Get<PersonalInformation>("PersonalInfo") ?? new PersonalInformation();
-            return Page();
+        public void OnGet()
+        {
+            // Any data loading logic if needed
         }
 
         public IActionResult OnPost(string formaction)
@@ -29,21 +29,36 @@ namespace NewHirePortalClean.Pages
                 return Page();
             }
 
-            // Save PersonalInfo to session
-            HttpContext.Session.Set("PersonalInfo", PersonalInfo);
+            // Save the form data before determining the action
+            _context.PersonalInformation.Update(PersonalInfo);
+            _context.SaveChanges();
 
-            if (formaction == "/EmploymentHistory")
+            // Handle the button actions based on the formaction value
+            if (formaction == "Next")
             {
-                return RedirectToPage("/EmploymentHistory");
+                // Redirect to the Address page (next page)
+                return RedirectToPage("/Address");
             }
-            else if (formaction == "/Splash")
+            else if (formaction == "Back")
             {
+                // Redirect to the Splash page (previous page)
                 return RedirectToPage("/Splash");
             }
-            else
+            else if (formaction == "Save")
             {
+                // Stay on the same page after saving
+                TempData["Message"] = "Form data saved.";
                 return Page();
             }
+            else if (formaction == "SaveAndContinue")
+            {
+                // Save and redirect to the Address page
+                TempData["Message"] = "Form data saved and continuing.";
+                return RedirectToPage("/Address");
+            }
+
+            // Default action is to remain on the same page
+            return Page();
         }
     }
 }

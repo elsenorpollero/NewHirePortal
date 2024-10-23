@@ -1,392 +1,205 @@
-@page
-@model NewHirePortalClean.Pages.AdminPortalModel
-@{
-    ViewData["Title"] = "Admin Portal";
-    Layout = null; // Remove this if you want to use your main layout
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using NewHirePortalClean.Data;
+using NewHirePortalClean.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace NewHirePortalClean.Pages
+{
+    public class AdminPortalModel : PageModel
+    {
+        private readonly AppDbContext _context;
+
+        public AdminPortalModel(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public List<User> Users { get; set; }
+        public List<EmployeeApplication> Applications { get; set; }
+
+        [BindProperty]
+        public string NewUsername { get; set; }
+
+        [BindProperty]
+        public string NewPassword { get; set; }
+
+        [BindProperty]
+        public string ConfirmPassword { get; set; }
+
+        [BindProperty]
+        public string UserRole { get; set; }
+
+        [BindProperty]
+        public string NeedsApplication { get; set; }
+
+        public void OnGet()
+        {
+            // Retrieve Users and Applications from the database
+            Users = _context.Users.ToList();
+            Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+        }
+
+        public async Task<IActionResult> OnPostAddUserAsync()
+        {
+            Console.WriteLine("OnPostAddUserAsync() called.");
+
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("Model state is invalid.");
+                foreach (var value in ModelState.Values)
+                {
+                    foreach (var error in value.Errors)
+                    {
+                        Console.WriteLine($"Error: {error.ErrorMessage}");
+                    }
+                }
+                Users = _context.Users.ToList();
+                Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+                return Page();
+            }
+
+            Console.WriteLine("Model state is valid. Adding new user.");
+
+            var newUser = new User
+            {
+                Username = NewUsername,
+                Password = NewPassword, // Ideally, hash passwords before storing them
+                IsAdmin = UserRole == "Admin"
+            };
+
+            try
+            {
+                _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+                Console.WriteLine("New user added to the database.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding user: {ex.Message}");
+            }
+
+            if (UserRole == "Employee" && NeedsApplication == "Yes")
+            {
+                Console.WriteLine("Adding new application for the user.");
+                var newApplication = new EmployeeApplication
+                {
+                    FirstName = NewUsername.Split(' ')[0],
+                    LastName = NewUsername.Split(' ').Length > 1 ? NewUsername.Split(' ')[1] : string.Empty,
+                    Status = "Pending",
+                    IsComplete = false,
+                    LastUpdated = System.DateTime.Now
+                };
+
+                try
+                {
+                    _context.EmployeeApplications.Add(newApplication);  // Changed to EmployeeApplications
+                    await _context.SaveChangesAsync();
+                    Console.WriteLine("New application added to the database.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error adding application: {ex.Message}");
+                }
+            }
+
+            Users = _context.Users.ToList();
+            Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteUserAsync(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                Console.WriteLine("User not found.");
+                Users = _context.Users.ToList();
+                Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+                ModelState.AddModelError(string.Empty, "User not found.");
+                return Page();
+            }
+
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            Console.WriteLine("User deleted successfully.");
+
+            // Reload data and redirect
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostDeleteApplicationAsync(int applicationId)
+        {
+            var application = _context.EmployeeApplications.FirstOrDefault(a => a.Id == applicationId);  // Changed to EmployeeApplications
+            if (application == null)
+            {
+                Console.WriteLine("Application not found.");
+                Users = _context.Users.ToList();
+                Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+                ModelState.AddModelError(string.Empty, "Application not found.");
+                return Page();
+            }
+
+            _context.EmployeeApplications.Remove(application);  // Changed to EmployeeApplications
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Application deleted successfully.");
+
+            // Reload data and redirect
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostEditUserAsync(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                Console.WriteLine("User not found.");
+                Users = _context.Users.ToList();
+                Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+                ModelState.AddModelError(string.Empty, "User not found.");
+                return Page();
+            }
+
+            // Update user details
+            user.Username = NewUsername;
+            if (!string.IsNullOrEmpty(NewPassword))
+            {
+                user.Password = NewPassword; // Ideally, hash passwords before storing them
+            }
+            user.IsAdmin = UserRole == "Admin";
+
+            await _context.SaveChangesAsync();
+            Console.WriteLine("User edited successfully.");
+
+            // Reload data and redirect
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostEditApplicationAsync(int applicationId)
+        {
+            var application = _context.EmployeeApplications.FirstOrDefault(a => a.Id == applicationId);  // Changed to EmployeeApplications
+            if (application == null)
+            {
+                Console.WriteLine("Application not found.");
+                Users = _context.Users.ToList();
+                Applications = _context.EmployeeApplications.ToList();  // Changed to EmployeeApplications
+                ModelState.AddModelError(string.Empty, "Application not found.");
+                return Page();
+            }
+
+            // Update application details
+            application.Status = "Updated"; // Example of updating status
+            application.LastUpdated = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+            Console.WriteLine("Application edited successfully.");
+
+            // Reload data and redirect
+            return RedirectToPage();
+        }
+    }
 }
-
-<head>
-    <link rel="stylesheet" href="~/css/formStyles.css" />
-    <style>
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .tile {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            width: 350px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-align: center;
-        }
-
-        .tile:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-
-        .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 0.9em;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            table-layout: auto; /* Allow table to adjust column widths automatically */
-        }
-
-        .styled-table th, .styled-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            word-wrap: break-word; /* Allow cell contents to wrap to prevent overflow */
-        }
-
-        .styled-table th {
-            background-color: #007bff;
-            color: #ffffff;
-        }
-
-        .styled-table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .form-style {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            width: 100%;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            text-align: left;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-            align-self: center;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-
-        .button-link {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .button-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<div class="container">
-    <!-- Tile for Logged-In Users -->
-    <div class="tile">
-        <h2>Logged-In Users</h2>
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Last Login</th>
-                    <th>Is Admin</th>
-                    <th>Actions</th> <!-- Added Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model.Users)
-                {
-                    <tr>
-                        <td>@user.Username</td>
-                        <td>@user.Password</td>
-                        <td>@(user.LastLogin == DateTime.MinValue ? "Never" : user.LastLogin.ToString("g"))</td>
-                        <td>@(user.IsAdmin ? "Yes" : "No")</td>
-                        <td>
-                            <a asp-page="/EditUser" asp-route-id="@user.Id" class="button-link">Edit</a> <!-- Edit link added here -->
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Tile for Employee Applications -->
-    <div class="tile">
-        <h2>Employee Applications</h2>
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Employee Name</th>
-                    <th>Is Complete</th>
-                    <th>Last Updated</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var app in Model.Applications)
-                {
-                    <tr>
-                        <td>@app.EmployeeName</td>
-                        <td>@(app.IsComplete ? "Yes" : "No")</td>
-                        <td>@app.LastUpdated.ToString("g")</td>
-                        <td><a asp-page="/EditApplication" asp-route-id="@app.Id" class="button-link">Edit</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Tile for Adding New User -->
-    <div class="tile">
-        <h2>Add New User</h2>
-        <form method="post" asp-page-handler="AddUser" class="form-style">
-            <div class="form-group">
-                <label for="newUsername">Username:</label>
-                <input type="text" id="newUsername" name="newUsername" required />
-            </div>
-            <div class="form-group">
-                <label for="newPassword">Password:</label>
-                <input type="password" id="newPassword" name="newPassword" required />
-            </div>
-            <div class="form-group">
-                <label for="isAdmin">Is Admin:</label>
-                <input type="checkbox" id="isAdmin" name="isAdmin" />
-            </div>
-            <button type="submit" class="button">Add User</button>
-        </form>
-    </div>
-</div>
-@page
-@model NewHirePortalClean.Pages.AdminPortalModel
-@{
-    ViewData["Title"] = "Admin Portal";
-    Layout = null; // Remove this if you want to use your main layout
-}
-
-<head>
-    <link rel="stylesheet" href="~/css/formStyles.css" />
-    <style>
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .tile {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            width: 350px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            text-align: center;
-        }
-
-        .tile:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        h2 {
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 15px;
-        }
-
-        .styled-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 0.9em;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            table-layout: auto; /* Allow table to adjust column widths automatically */
-        }
-
-        .styled-table th, .styled-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-            word-wrap: break-word; /* Allow cell contents to wrap to prevent overflow */
-        }
-
-        .styled-table th {
-            background-color: #007bff;
-            color: #ffffff;
-        }
-
-        .styled-table tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .form-style {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            width: 100%;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            text-align: left;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-            align-self: center;
-        }
-
-        .button:hover {
-            background-color: #0056b3;
-        }
-
-        .button-link {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .button-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<div class="container">
-    <!-- Tile for Logged-In Users -->
-    <div class="tile">
-        <h2>Logged-In Users</h2>
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Last Login</th>
-                    <th>Is Admin</th>
-                    <th>Actions</th> <!-- Added Actions column -->
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var user in Model.Users)
-                {
-                    <tr>
-                        <td>@user.Username</td>
-                        <td>@user.Password</td>
-                        <td>@(user.LastLogin == DateTime.MinValue ? "Never" : user.LastLogin.ToString("g"))</td>
-                        <td>@(user.IsAdmin ? "Yes" : "No")</td>
-                        <td>
-                            <a asp-page="/EditUser" asp-route-id="@user.Id" class="button-link">Edit</a> <!-- Edit link added here -->
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Tile for Employee Applications -->
-    <div class="tile">
-        <h2>Employee Applications</h2>
-        <table class="styled-table">
-            <thead>
-                <tr>
-                    <th>Employee Name</th>
-                    <th>Is Complete</th>
-                    <th>Last Updated</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var app in Model.Applications)
-                {
-                    <tr>
-                        <td>@app.EmployeeName</td>
-                        <td>@(app.IsComplete ? "Yes" : "No")</td>
-                        <td>@app.LastUpdated.ToString("g")</td>
-                        <td><a asp-page="/EditApplication" asp-route-id="@app.Id" class="button-link">Edit</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Tile for Adding New User -->
-    <div class="tile">
-        <h2>Add New User</h2>
-        <form method="post" asp-page-handler="AddUser" class="form-style">
-            <div class="form-group">
-                <label for="newUsername">Username:</label>
-                <input type="text" id="newUsername" name="newUsername" required />
-            </div>
-            <div class="form-group">
-                <label for="newPassword">Password:</label>
-                <input type="password" id="newPassword" name="newPassword" required />
-            </div>
-            <div class="form-group">
-                <label for="isAdmin">Is Admin:</label>
-                <input type="checkbox" id="isAdmin" name="isAdmin" />
-            </div>
-            <button type="submit" class="button">Add User</button>
-        </form>
-    </div>
-</div>

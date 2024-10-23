@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NewHirePortalClean.Data;
 using NewHirePortalClean.Models;
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NewHirePortalClean.Pages
@@ -17,13 +17,14 @@ namespace NewHirePortalClean.Pages
         }
 
         [BindProperty]
-        public Employee Employee { get; set; }
+        public EmployeeApplication Application { get; set; }  // Ensure this is EmployeeApplication
 
-        public async Task<IActionResult> OnGetAsync(int id)
+        public IActionResult OnGet(int applicationId)
         {
-            Employee = await _context.Employees.FindAsync(id);
+            // Fetch EmployeeApplication by ID instead of EmployeeInformation
+            Application = _context.EmployeeApplications.FirstOrDefault(a => a.Id == applicationId);
 
-            if (Employee == null)
+            if (Application == null)
             {
                 return NotFound();
             }
@@ -38,19 +39,20 @@ namespace NewHirePortalClean.Pages
                 return Page();
             }
 
-            var employeeToUpdate = await _context.Employees.FindAsync(Employee.Id);
+            var applicationInDb = _context.EmployeeApplications.FirstOrDefault(a => a.Id == Application.Id);
 
-            if (employeeToUpdate == null)
+            if (applicationInDb == null)
             {
                 return NotFound();
             }
 
-            employeeToUpdate.IsApplicationComplete = Employee.IsApplicationComplete;
-            employeeToUpdate.LastUpdated = DateTime.Now;
+            // Update properties of application
+            applicationInDb.Status = Application.Status;
+            applicationInDb.LastUpdated = System.DateTime.Now;
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/ManageApplications");
+            return RedirectToPage("/AdminPortal");
         }
     }
 }

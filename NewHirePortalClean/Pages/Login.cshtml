@@ -1,54 +1,119 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using NewHirePortalClean.Data;
-using NewHirePortalClean.Models;
-using System.Linq;
-using System.Threading.Tasks;
+﻿@page
+@model NewHirePortalClean.Pages.LoginModel
+@{
+    Layout = null;
+}
 
-namespace NewHirePortalClean.Pages
-{
-    public class LoginModel : PageModel
-    {
-        private readonly AppDbContext _context;
+<div class="login-container">
+    <div class="splash-logo">
+        <img src="~/images/SMCLR- BLACK AND WHITE-01.png" alt="Company Logo" style="width: 150px; display: block; margin: 0 auto;" />
+    </div>
+    <h2>Login</h2>
+    <form method="post" asp-page="/Login">
+        <div>
+            <label asp-for="Username">Username:</label>
+            <input asp-for="Username" autocomplete="off" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Password">Password:</label>
+            <input asp-for="Password" type="password" autocomplete="off" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="RememberMe">
+                <input asp-for="RememberMe" type="checkbox" onchange="toggleWarning()" /> Remember Me
+            </label>
+            <p id="rememberMeWarning" class="warning" style="display: none;">Note: Do not use the "Remember Me" option on public or shared computers.</p>
+        </div>
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">Login</button>
+            <a href="/Login?handler=GuestLogin" class="btn btn-secondary">Login as Guest</a>
+        </div>
+    </form>
 
-        public LoginModel(AppDbContext context)
-        {
-            _context = context;
+    <div>
+        <span asp-validation-summary="All" class="text-danger"></span>
+    </div>
+</div>
+
+<script>
+    function toggleWarning() {
+        const checkbox = document.querySelector('[asp-for="RememberMe"]');
+        const warning = document.getElementById('rememberMeWarning');
+        if (checkbox.checked) {
+            warning.style.display = 'block';
+        } else {
+            warning.style.display = 'none';
+        }
+    }
+</script>
+
+<style>
+    .login-container {
+        width: 400px;
+        margin: auto;
+        padding-top: 100px;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .login-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
-        [BindProperty]
-        public string Username { get; set; }
-
-        [BindProperty]
-        public string Password { get; set; }
-
-        public async Task<IActionResult>
-    OnPostAsync()
-    {
-    if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
-    {
-    ModelState.AddModelError(string.Empty, "Username and Password are required.");
-    return Page();
+    h2 {
+        margin-bottom: 20px;
+        color: #333;
     }
 
-    // Verify user credentials
-    var user = _context.Users.FirstOrDefault(u => u.Username == Username && u.Password == Password);
-    if (user == null)
-    {
-    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-    return Page();
+    form div {
+        margin-bottom: 15px;
     }
 
-    // Successful login
-    HttpContext.Session.SetString("Username", user.Username);
-    if (user.IsAdmin)
-    {
-    return RedirectToPage("/AdminPortal");
+    input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
     }
-    else
-    {
-    return RedirectToPage("/UserDashboard"); // Assuming there's a user dashboard
+
+    .form-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
     }
+
+    button, .btn-secondary {
+        padding: 10px;
+        width: 48%; /* Adjusted for side-by-side layout */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        text-align: center;
     }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
     }
+
+    .warning {
+        font-size: 0.9em;
+        color: red;
+    }
+</style>

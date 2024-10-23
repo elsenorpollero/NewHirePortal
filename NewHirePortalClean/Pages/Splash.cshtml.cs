@@ -5,8 +5,10 @@ namespace NewHirePortalClean.Pages
 {
     public class SplashModel : PageModel
     {
-        public void OnGet()
+        public IActionResult OnPostProceed()
         {
+            // Redirect to the login page
+            return RedirectToPage("/Login");
         }
     }
 }

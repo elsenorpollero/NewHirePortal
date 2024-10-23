@@ -1,49 +1,85 @@
 ﻿@page
-@model NewHirePortalClean.Pages.SplashModel
+@model NewHireFormModel
 @{
-    ViewData["Title"] = "Welcome to SMCLR Team";
-    Layout = null; // Use the main layout if available
+    ViewData["Title"] = "New Hire Form";
 }
 
+<link rel="stylesheet" href="~/css/splash.css" />
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link rel="stylesheet" href="~/css/formStyles.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Hire Form</title>
     <style>
-        .splash-container {
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        .button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            transition: background-color 0.3s ease;
-            margin-top: 30px;
-        }
-
-            .button:hover {
-                background-color: #0056b3;
-            }
-
-        h1 {
-            color: #333;
-        }
-
-        img {
-            max-width: 300px;
-            height: auto;
-            margin-bottom: 20px;
+        body {
+            background: url('/images/47C0FD68-1884-4C3F-8CB4-91F7E953122C.jpeg') no-repeat center center fixed;
+            background-size: cover;
         }
     </style>
 </head>
+<body>
+    <!-- Custom Header with Navigation Links -->
+    <header class="splash-header header animated-tile">
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/Admin">Admin Portal</a></li>
+                <li><a href="https://www.SMCLR.com/privacy-policy">Privacy</a></li>
+                <li><a href="https://www.smclr.com">Learn More</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<div class="splash-container">
-    <img src="~/images/SMCLR- BLACK AND WHITE-01.png" alt="Company Logo" />
-    <h1>Welcome to the SMCLR Team</h1>
-    <p>We are excited to have you join us. Please proceed when you are ready to fill out your application.</p>
-    <a href="@Url.Page("/Login")" class="button">Proceed to Login</a>
-</div>
+    <!-- Main Form Section -->
+    <div class="container">
+        <div class="tile animated-tile splash-container">
+            <!-- Centered Logo -->
+            <div class="splash-logo">
+                <img src="/images/SMCLR- BLACK AND WHITE-01.png" alt="Company Logo">
+            </div>
+            <!-- Slider Container -->
+            <div class="slider-container">
+                <input type="range" min="0" max="100" value="0" class="slider" id="splashSlider">
+                <p>Drag the slider to get started</p>
+            </div>
+
+            <script>
+                const slider = document.getElementById("splashSlider");
+                slider.addEventListener("input", function () {
+                    if (this.value == 100) {
+                        window.location.href = '/EmployeeInformation';  // Redirect to first page
+                    }
+                });
+            </script>
+
+        </div>
+    </div>
+
+    <!-- Custom Footer with Copyright at the Bottom -->
+    <footer class="splash-footer footer animated-tile">
+        <div class="footer-bar">
+            <p class="footer-text">&copy; 2024 SMCLR, A Crane Co., a Series LLC.</p>
+            <p class="footer-text">All rights reserved. <a href="https://www.SMCLR.com/privacy-policy">Privacy</a></p>
+        </div>
+    </footer>
+
+
+    <script>
+        // JavaScript to handle slider behavior
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.getElementById('slider');
+
+            // Add an event listener to detect when the slider reaches the end
+            slider.addEventListener('input', function () {
+                // Check if the slider has reached the maximum value
+                if (slider.value == slider.max) {
+                    // Redirect to the next page
+                    window.location.href = '/EmployeeInformation'; // Replace with the correct URL of your next page
+                }
+            });
+        });
+    </script>
+</body>
+</html>
